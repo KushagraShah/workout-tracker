@@ -10,7 +10,7 @@ const NAV = [
 ]
 
 export function Layout({ children }: { children: ReactNode }) {
-  const { user, signOut } = useAuth()
+  const { displayName, user, signOut } = useAuth()
 
   return (
     <div className="flex min-h-full flex-col">
@@ -21,7 +21,9 @@ export function Layout({ children }: { children: ReactNode }) {
             <span className="font-semibold text-white">Workout Tracker</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="hidden text-sm text-slate-400 sm:inline">{user?.email}</span>
+            <span className="hidden text-sm text-slate-400 sm:inline">
+              {displayName ?? user?.email}
+            </span>
             <button
               type="button"
               onClick={() => void signOut()}

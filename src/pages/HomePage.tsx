@@ -10,7 +10,7 @@ interface Counts {
 }
 
 export function HomePage() {
-  const { user } = useAuth()
+  const { displayName } = useAuth()
   const [counts, setCounts] = useState<Counts | null>(null)
 
   useEffect(() => {
@@ -27,12 +27,11 @@ export function HomePage() {
     }
   }, [])
 
-  const displayName: string =
-    (user?.user_metadata?.display_name as string | undefined) ?? user?.email ?? 'there'
-
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-white">Welcome back, {displayName}</h1>
+      <h1 className="text-2xl font-semibold text-white">
+        Welcome back, {displayName ?? 'there'}
+      </h1>
       <p className="mt-1 text-sm text-slate-400">
         The workout flow arrives in Phase 2. For now, build your catalogue.
       </p>

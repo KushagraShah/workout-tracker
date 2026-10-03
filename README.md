@@ -1,13 +1,8 @@
 # Workout Tracker
 
-A personal, single-user workout tracker built as a free replacement for a Notion-based
-workout setup. It keeps the useful structure of the original system (an exercise catalogue,
-machines with setup parameters and reference videos, routines with rounds) while making
-workout logging faster and the history more visible.
-
-> **AI-assisted development:** this project is built with AI assistance (planning,
-> implementation, review and debugging) under human direction. Product requirements,
-> design decisions and final acceptance are guided by the author.
+A personal workout tracker: an exercise catalogue, machines with their setup parameters and
+reference videos, and routines with rounds — built so that logging a session is quick and the
+history is easy to read.
 
 ## Tech stack
 
@@ -32,7 +27,8 @@ workout logging faster and the history more visible.
 - **Phase 3 — History, data portability & polish:** per-exercise history, JSON/CSV
   export & restore, keepalive ping, PWA offline caching, sync/retry.
 
-Deferred deliberately: Notion import and richer analytics.
+Deliberately out of scope for now: importing existing data from other tools, and richer
+analytics.
 
 ## Concepts
 
@@ -66,13 +62,16 @@ npm run preview
    - **Set the SQL Editor's "Run as" dropdown (top-right) to `postgres`** first. It defaults
      to `authenticated`, which lacks `CREATE` on the `public` schema and fails with
      `42501: permission denied for schema public`.
-2. In **Authentication → Users → Add user**, create your single account (email + password,
-   *Auto Confirm*). Set a display name via the user's metadata if you want one.
-3. In **Authentication → Providers → Email**, turn *Allow new users to sign up* **off** — the
-   app is sign-in only and this keeps it single-user.
-4. In **Authentication → URL Configuration**, set the Site URL and Redirect URLs to
+2. In **Authentication → Providers → Email**, turn **Confirm email** *off* so a newly created
+   account can be used straight away. Leave *Allow new users to sign up* **on**.
+   - With *Confirm email* on, `signUp` returns a user but no session, and the app asks the user
+     to check their inbox instead. Following a confirmation link would also need
+     `detectSessionInUrl` enabled in `src/lib/supabase.ts`, which the HashRouter setup avoids.
+3. In **Authentication → URL Configuration**, set the Site URL and Redirect URLs to
    `https://<user>.github.io/workout-tracker/` (plus `http://localhost:5173/workout-tracker/`
    for local development).
+4. Create accounts through the app's **Sign up** form. It asks for a name, which is stored as the
+   `display_name` user metadata and shown in the header and on the home screen.
 
 ## Deploy (GitHub Pages)
 
@@ -85,6 +84,16 @@ publishes `dist/`.
    - `VITE_SUPABASE_ANON_KEY`
 
 Never commit `.env` — it is git-ignored; `.env.example` documents the keys.
+
+**Why not a `gh-pages` branch?** GitHub's *Deploy from a branch* mode only runs Jekyll (or a
+plain passthrough with `.nojekyll`) — it cannot run `npm run build`. Publishing this app from a
+branch would therefore mean committing the compiled `dist/` output into git on every deploy
+(and, for a local deploy script, losing the lint/build gate on push). The GitHub Actions
+artifact flow used here is the documented approach when you need a real build step and don't
+want a dedicated branch holding compiled files. `deploy-pages` also ties each deployment to the
+exact source commit, visible under the repository's **Deployments**. The `VITE_SUPABASE_*`
+values are not sensitive — `VITE_SUPABASE_ANON_KEY` ships in the client bundle by design, and
+row-level security is what actually protects the data.
 
 ## Project structure
 
@@ -102,7 +111,8 @@ public/           PWA manifest, icon, minimal service worker
 
 ## Known limits
 
-- Single user only; there is no sign-up UI.
+- Every row is scoped to its owning account by Row Level Security (`auth.uid() = user_id`), so
+  accounts never see each other's data. There are no shared or team features.
 - Supabase free tier has no automatic backups of its own — JSON export (Phase 3) is the
   safety net, and the free-tier project is kept awake with a manual keepalive ping.
 - Offline support is a Phase 3 concern; Phase 1 ships a minimal installable PWA shell.

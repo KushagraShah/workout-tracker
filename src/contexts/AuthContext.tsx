@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import type { Session } from '@supabase/supabase-js'
+import type { Session, User } from '@supabase/supabase-js'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
 import { AuthContext, type AuthContextValue } from './auth-context'
+
+/** Reads the name captured at sign-up out of the user's metadata. */
+function nameFrom(user: User | null): string | null {
+  const value = user?.user_metadata?.display_name
+  return typeof value === 'string' && value.trim() ? value.trim() : null
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
@@ -30,21 +36,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const value = useMemo<AuthContextValue>(
-    () => ({
+  const value = useMemo<AuthContextValue>(() => {
+    const user = session?.user ?? null
+
+    return {
       session,
-      user: session?.user ?? null,
+      user,
+      displayName: nameFrom(user),
       loading,
       async signIn(email: string, password: string) {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
       },
+      async signUp(name: string, email: string, password: string) {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { data: { display_name: name } },
+        })
+        if (error) throw error
+        // Supabase returns a user without a session when email confirmation is
+        // required; otherwise the session lands here and unlocks the app.
+        return { needsEmailConfirmation: Boolean(data.user) && !data.session }
+      },
       async signOut() {
         await supabase.auth.signOut()
       },
-    }),
-    [session, loading],
-  )
+    }
+  }, [session, loading])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

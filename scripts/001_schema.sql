@@ -1,5 +1,5 @@
 -- ============================================================================
--- Workout Tracker - Phase 1 schema (single-user)
+-- Workout Tracker - Phase 1 schema
 -- Run ONCE in the Supabase SQL editor (Dashboard -> SQL Editor -> New query).
 --
 -- IMPORTANT: in the SQL Editor, set the "Run as" dropdown (top-right) to
