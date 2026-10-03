@@ -1,0 +1,25 @@
+{
+  "name": "Workout Tracker",
+  "short_name": "Workout",
+  "description": "Personal workout tracker: routines, exercises, machines and logging.",
+  "start_url": "/workout-tracker/",
+  "scope": "/workout-tracker/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/workout-tracker/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/workout-tracker/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
