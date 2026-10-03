@@ -8,6 +8,9 @@ import { ExercisesPage } from './pages/ExercisesPage'
 import { HomePage } from './pages/HomePage'
 import { MachinesPage } from './pages/MachinesPage'
 import { MusclesPage } from './pages/MusclesPage'
+import { RoutineDetailPage } from './pages/RoutineDetailPage'
+import { RoutinesPage } from './pages/RoutinesPage'
+import { SessionPage } from './pages/SessionPage'
 
 export default function App() {
   const { session, loading } = useAuth()
@@ -26,6 +29,9 @@ export default function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/routines" element={<RoutinesPage />} />
+        <Route path="/routines/:id" element={<RoutineDetailPage />} />
+        <Route path="/sessions/:id" element={<SessionPage />} />
         <Route path="/exercises" element={<ExercisesPage />} />
         <Route path="/exercises/:id" element={<ExerciseDetailPage />} />
         <Route path="/machines" element={<MachinesPage />} />

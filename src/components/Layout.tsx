@@ -3,7 +3,8 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from '../contexts/useAuth'
 
 const NAV = [
-  { to: '/', label: 'Home', icon: '🏠', end: true },
+  { to: '/', label: 'Today', icon: '🏠', end: true },
+  { to: '/routines', label: 'Plan', icon: '📋', end: false },
   { to: '/exercises', label: 'Exercises', icon: '🏋️', end: false },
   { to: '/machines', label: 'Machines', icon: '🛠️', end: false },
   { to: '/muscles', label: 'Muscles', icon: '🎯', end: false },

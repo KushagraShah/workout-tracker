@@ -14,6 +14,17 @@ export async function listExerciseMachines(exerciseId: string): Promise<Exercise
   return (data ?? []) as ExerciseMachine[]
 }
 
+/** All machine links available to the signed-in account, for routine/session pickers. */
+export async function listAllExerciseMachines(): Promise<ExerciseMachine[]> {
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select('*')
+    .order('is_default', { ascending: false })
+    .order('created_at')
+  if (error) throw error
+  return (data ?? []) as ExerciseMachine[]
+}
+
 export async function createExerciseMachine(
   input: ExerciseMachineInput,
 ): Promise<ExerciseMachine> {
